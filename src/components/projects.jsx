@@ -1,40 +1,79 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { FaGithub, FaHome } from 'react-icons/fa'
 import css from '../css/project.module.css'; 
 
+const API_URL = 'http://localhost:5000/api/projects';
+
 export default function Projects({ isDark }) {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const fetchProjects = async () => {
+    try {
+      const response = await fetch(API_URL);
+      if (!response.ok) throw new Error('Failed to fetch projects');
+      const data = await response.json();
+      setProjects(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className={`${css.project} ${isDark ? css.dark : css.light}`}>
+        <a href="/#menu" className={css.homeIcon}><FaHome size={24} /></a>
+        <p>Loading projects...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={`${css.project} ${isDark ? css.dark : css.light}`}>
+        <a href="/#menu" className={css.homeIcon}><FaHome size={24} /></a>
+        <p>Error: {error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className={`${css.project} ${isDark ? css.dark : css.light}`}>
-        <a href="/#menu" className={css.homeIcon}><FaHome size={24} /></a>
-        <div className={css.card}>
-            <div className={css.imgContainer}>
-                <img src="home3.png" alt="project" />
-            </div>
-            <div className={css.content}>
-                <h3>Emotion Based Music Recommendation System</h3>
-                <h6>Designed and implemented a music recommendation system driven by emotion detection from facial
-                expressions and text input.</h6>
-                <h6>Achieved 65% accuracy in emotion detection using CNN models</h6>
-                <h6>Tools used: Django, HTML, CSS, TensorFlow, Hugging Face</h6>
-                <a href="https://github.com/adarsh-varrier/FaceBeat" target="_blank" rel="noopener noreferrer" className={css.githubLink}>
+      <a href="/#menu" className={css.homeIcon}><FaHome size={24} /></a>
+      {projects.length === 0 ? (
+        <p>No projects found.</p>
+      ) : (
+        projects.map((project) => {
+          // Split description by newline to display as multiple h6 elements
+          const descriptionLines = project.description.split('\n').filter(line => line.trim());
+          
+          return (
+            <div key={project._id} className={css.card}>
+              <div className={css.imgContainer}>
+                <img src={project.imageUrl} alt={project.title} />
+              </div>
+              <div className={css.content}>
+                <h3>{project.title}</h3>
+                {descriptionLines.map((line, index) => (
+                  <h6 key={index}>{line}</h6>
+                ))}
+                {project.githubUrl && (
+                  <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className={css.githubLink}>
                     <FaGithub size={28} />
-                </a>
+                  </a>
+                )}
+              </div>
             </div>
-        </div>
-        <div className={css.card}>
-            <div className={css.imgContainer}>
-                <img src="smartplay.png" alt="project" />
-            </div>
-            <div className={css.content}>
-                <h3>Weather and Health-Aware Playground System</h3>
-                <h6>Integrates Google Fit API and Random Forest ML algorithm to offer personalised health status predictions.</h6>
-                <h6>Use OpenWeatherMap and OpenUV APIs for real-time weather and UV index-based activity recommendations.</h6>
-                <h6>Tools used: Django, React.js, PostgreSQL, Scikit-learn</h6>
-                <a href="https://github.com/adarsh-varrier/smartplayground" target="_blank" rel="noopener noreferrer" className={css.githubLink}>
-                    <FaGithub size={28} />
-                </a>
-            </div>
-        </div>
+          );
+        })
+      )}
     </div>
   )
 }

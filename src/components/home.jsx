@@ -1,19 +1,59 @@
 // Home.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import css from '../css/home.module.css';
 import { useNavigate } from "react-router-dom";
 
+const API_URL = 'http://localhost:5000/api/other-details';
+
 export default function Home({ isDark, scrollToMenu }) {
   const navigate = useNavigate();
-  const [showAbout,setShowAbout] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
+  const [details, setDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchDetails();
+  }, []);
+
+  const fetchDetails = async () => {
+    try {
+      const response = await fetch(API_URL);
+      if (!response.ok) throw new Error('Failed to fetch details');
+      const data = await response.json();
+      setDetails(data);
+    } catch (error) {
+      console.error('Error fetching details:', error);
+      // Set default values if fetch fails
+      setDetails({
+        name: 'Adarsh',
+        roles: ['Web Developer', 'Full Stack Developer'],
+        location: 'from Kerala',
+        aboutParagraphs: []
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className={`${css.home} ${isDark ? css.dark : css.light}`}>
+        <div className={css.homemain}>
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`${css.home} ${isDark ? css.dark : css.light}`}>
       <div className={css.homemain}>
-        <h1>Hi, I am Adarsh.</h1>
+        <h1>Hi, I am {details?.name || 'Adarsh'}.</h1>
         <div style={{ position: 'relative', minHeight: '2.5rem', marginTop: '1rem' }}>
-          <h3>Web Developer</h3>
-          <h3>Full Stack Developer</h3>
-          <h5>from Kerala</h5>
+          {details?.roles && details.roles.map((role, index) => (
+            <h3 key={index}>{role}</h3>
+          ))}
+          {details?.location && <h5>{details.location}</h5>}
         </div>
         
       </div>
@@ -29,11 +69,13 @@ export default function Home({ isDark, scrollToMenu }) {
             <button className={css.closeBtn} onClick={() => setShowAbout(false)}>×</button>
             <h2 className={css.popupTitle}>About Me</h2>
             <div className={css.board}>
-              <p className={css.paragraph}>I'm Adarsh P from Kottayam, Kerala. I hold a Master of Computer Applications (MCA) from Cochin University of Science and Technology, after completing my BCA from Mahatma Gandhi University.</p>
-              <p className={css.paragraph}>I have a strong interest in full-stack development and machine learning, with hands-on experience in technologies such as Python, Django, React.js, and PostgreSQL.</p>
-              <p className={css.paragraph}>Currently, I am pursuing two internships: one with the Mahatma Gandhi University Innovation Foundation as a Python Developer, and another with Qverse Technologies as a Remote Backend Developer. Through these roles, I have gained practical experience with tools like AWS EC2, Jira, GitLab, and GitHub, enhancing my ability to work effectively in collaborative environments.</p>
-              <p className={css.paragraph}>During my academics, I worked on several major projects. One of them was a Weather & Health-Aware Playground System, which integrated real-time APIs with machine learning to provide health-based recommendations. Another was an Emotion-Based Music Recommendation System, built using TensorFlow and Hugging Face, which detected emotions from facial expressions and text input to generate personalized music suggestions.</p>
-              <p className={css.paragraph}>Beyond technical expertise, I value teamwork, adaptability, and continuous learning—qualities I consider essential in a professional setting. I have actively participated in hackathons, mentored at tech events, and volunteered with NSS, experiences that have shaped me into both a team player and a leader.</p>
+              {details?.aboutParagraphs && details.aboutParagraphs.length > 0 ? (
+                details.aboutParagraphs.map((paragraph, index) => (
+                  <p key={index} className={css.paragraph}>{paragraph}</p>
+                ))
+              ) : (
+                <p className={css.paragraph}>No about information available.</p>
+              )}
             </div>
           </div>
         </div>

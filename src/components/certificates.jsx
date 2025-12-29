@@ -1,41 +1,68 @@
-import React from 'react'
-import { FaHome } from 'react-icons/fa'
+// frontend/src/components/Certificates.jsx
+import React, { useState, useEffect } from 'react';
+import { FaHome } from 'react-icons/fa';
 import css from '../css/certificates.module.css';
 
 export default function Certificates({ isDark }) {
+  const [certificates, setCertificates] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchCertificates();
+  }, []);
+
+  const fetchCertificates = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/certificates');
+      if (!response.ok) throw new Error('Failed to fetch certificates');
+      const data = await response.json();
+      setCertificates(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className={`${css.certificates} ${isDark ? css.dark : css.light}`}>
+        <a href="/#menu" className={css.homeIcon}><FaHome size={24} /></a>
+        <p>Loading certificates...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={`${css.certificates} ${isDark ? css.dark : css.light}`}>
+        <a href="/#menu" className={css.homeIcon}><FaHome size={24} /></a>
+        <p>Error: {error}</p>
+      </div>
+    );
+  }
+
   return (
-    <div className={`${css.certificates} ${isDark ? css.dark : css.light}`}>
-      <a href="/#menu" className={css.homeIcon}><FaHome size={24} /></a>
-      <div className={css.card}>
-        <div className={css.imgContainer}>
-          <img src="python.jpg" alt="certificate" />
-        </div>
+    <>
+      <div className={`${css.certificates} ${isDark ? css.dark : css.light}`}>
+        <a href="/#menu" className={css.homeIcon}><FaHome size={24} /></a>
+        
+        {certificates.length === 0 ? (
+          <p>No certificates found.</p>
+        ) : (
+          certificates.map((cert) => (
+            <div key={cert._id} className={css.card} onClick={() => handleImageClick(cert)}>
+              <div className={css.imgContainer}>
+                <img src={cert.imageUrl} alt={cert.title} />
+                {cert.title && <div className={css.certTitle}>{cert.title}</div>}
+              </div>
+            </div>
+          ))
+        )}
       </div>
-      <div className={css.card}>
-        <div className={css.imgContainer}>
-          <img src="AWS1.jpg" alt="certificate" />
-        </div>
-      </div>
-      <div className={css.card}>
-        <div className={css.imgContainer}>
-          <img src="freecode.png" alt="project" />
-        </div>
-      </div>
-      <div className={css.card}>
-        <div className={css.imgContainer}>
-          <img src="iot1.jpg" alt="certificate" />
-        </div>
-      </div>
-      <div className={css.card}>
-        <div className={css.imgContainer}>
-          <img src="AI.png" alt="certificate" />
-        </div>
-      </div>
-      <div className={css.card}>
-        <div className={css.imgContainer}>
-          <img src="cyber.png" alt="project" />
-        </div>
-      </div>
-    </div>
-  )
+
+      
+    </>
+  );
 }

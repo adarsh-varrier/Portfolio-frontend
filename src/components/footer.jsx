@@ -1,21 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import css from '../css/footer.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGitlab, faTelegram, faLinkedin, faGithub } from '@fortawesome/free-brands-svg-icons';
 
+const API_URL = 'http://localhost:5000/api/other-details';
+
 export default function Footer({ isDark }) {
+  const [details, setDetails] = useState({
+    email: 'adarshpmanimandiram@gmail.com',
+    phoneNumber: '+91 8137008256'
+  });
+
+  useEffect(() => {
+    fetchDetails();
+  }, []);
+
+  const fetchDetails = async () => {
+    try {
+      const response = await fetch(API_URL);
+      if (!response.ok) throw new Error('Failed to fetch details');
+      const data = await response.json();
+      if (data.email) setDetails(prev => ({ ...prev, email: data.email }));
+      if (data.phoneNumber) setDetails(prev => ({ ...prev, phoneNumber: data.phoneNumber }));
+    } catch (error) {
+      console.error('Error fetching details:', error);
+      // Keep default values if fetch fails
+    }
+  };
+
   return (
     <footer className={`${css.footer} ${isDark ? css.dark : css.light}`}>
       <div className={css.section}>
         <h3>Let's Connect</h3>
         <ul>
           <li>
-            <a href="mailto:adarshpmanimandiram@gmail.com">
-              adarshpmanimandiram@gmail.com
+            <a href={`mailto:${details.email}`}>
+              {details.email}
             </a>
           </li>
           <li>
-            <a href="tel:+918137008256">+91 8137008256</a>
+            <a href={`tel:${details.phoneNumber.replace(/\s/g, '')}`}>{details.phoneNumber}</a>
           </li>
         </ul>
       </div>
