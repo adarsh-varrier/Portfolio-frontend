@@ -52,7 +52,7 @@ export default function AdminLogin() {
     } catch (err) {
       // Handle network errors and other errors
       if (err.message === 'Failed to fetch' || err.name === 'TypeError') {
-        setError('Cannot connect to server. Please make sure the backend server is running on port 5000.');
+        setError('Cannot connect to server. Please check your network connection and ensure the backend is running.');
       } else {
         setError(err.message || 'An error occurred during login');
       }
