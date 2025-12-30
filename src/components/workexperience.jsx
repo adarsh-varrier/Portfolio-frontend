@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { FaRegCalendarAlt, FaHome } from "react-icons/fa";
 import css from '../css/work.module.css';
-
-const API_URL = 'http://localhost:5000/api/work-experience';
+import { API_ENDPOINTS } from '../config/api';
 
 export default function Workexperience({ isDark }) {
   const [workExperiences, setWorkExperiences] = useState([]);
@@ -15,7 +14,7 @@ export default function Workexperience({ isDark }) {
 
   const fetchWorkExperiences = async () => {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(API_ENDPOINTS.WORK_EXPERIENCE);
       const data = await response.json();
       if (data.success) {
         setWorkExperiences(data.data);

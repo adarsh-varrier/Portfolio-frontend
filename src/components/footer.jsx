@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import css from '../css/footer.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGitlab, faTelegram, faLinkedin, faGithub } from '@fortawesome/free-brands-svg-icons';
-
-const API_URL = 'http://localhost:5000/api/other-details';
+import { API_ENDPOINTS } from '../config/api';
 
 export default function Footer({ isDark }) {
   const [details, setDetails] = useState({
@@ -17,7 +16,7 @@ export default function Footer({ isDark }) {
 
   const fetchDetails = async () => {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(API_ENDPOINTS.OTHER_DETAILS);
       if (!response.ok) throw new Error('Failed to fetch details');
       const data = await response.json();
       if (data.email) setDetails(prev => ({ ...prev, email: data.email }));

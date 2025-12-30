@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import css from '../css/manageCertificates.module.css';
-
-const API_URL = 'http://localhost:5000/api/projects';
+import { API_ENDPOINTS } from '../config/api';
 
 export default function ManageProject() {
   const [projects, setProjects] = useState([]);
@@ -30,7 +29,7 @@ export default function ManageProject() {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(API_ENDPOINTS.PROJECTS);
       const data = await response.json();
       setProjects(data);
     } catch (error) {
@@ -66,8 +65,8 @@ export default function ManageProject() {
 
     try {
       const url = editingId 
-        ? `${API_URL}/${editingId}`
-        : API_URL;
+        ? `${API_ENDPOINTS.PROJECTS}/${editingId}`
+        : API_ENDPOINTS.PROJECTS;
       
       const method = editingId ? 'put' : 'post';
 
@@ -109,7 +108,7 @@ export default function ManageProject() {
     if (!window.confirm('Are you sure you want to delete this project?')) return;
 
     try {
-      await axios.delete(`${API_URL}/${id}`, {
+      await axios.delete(`${API_ENDPOINTS.PROJECTS}/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert('Project deleted!');

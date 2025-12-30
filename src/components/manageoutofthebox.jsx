@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import css from '../css/manageCertificates.module.css';
-
-const API_URL = 'http://localhost:5000/api/outofthebox';
+import { API_ENDPOINTS } from '../config/api';
 
 export default function ManageOutOfTheBox() {
   const [outOfTheBox, setOutOfTheBox] = useState([]);
@@ -29,7 +28,7 @@ export default function ManageOutOfTheBox() {
 
   const fetchOutOfTheBox = async () => {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(API_ENDPOINTS.OUT_OF_THE_BOX);
       const data = await response.json();
       setOutOfTheBox(data);
     } catch (error) {
@@ -64,8 +63,8 @@ export default function ManageOutOfTheBox() {
 
     try {
       const url = editingId 
-        ? `${API_URL}/${editingId}`
-        : API_URL;
+        ? `${API_ENDPOINTS.OUT_OF_THE_BOX}/${editingId}`
+        : API_ENDPOINTS.OUT_OF_THE_BOX;
       
       const method = editingId ? 'put' : 'post';
 
@@ -106,7 +105,7 @@ export default function ManageOutOfTheBox() {
     if (!window.confirm('Are you sure you want to delete this record?')) return;
 
     try {
-      await axios.delete(`${API_URL}/${id}`, {
+      await axios.delete(`${API_ENDPOINTS.OUT_OF_THE_BOX}/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert('Record deleted!');

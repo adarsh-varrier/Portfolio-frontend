@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import css from '../css/home.module.css';
 import { useNavigate } from "react-router-dom";
-
-const API_URL = 'http://localhost:5000/api/other-details';
+import { API_ENDPOINTS } from '../config/api';
 
 export default function Home({ isDark, scrollToMenu }) {
   const navigate = useNavigate();
@@ -17,7 +16,7 @@ export default function Home({ isDark, scrollToMenu }) {
 
   const fetchDetails = async () => {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(API_ENDPOINTS.OTHER_DETAILS);
       if (!response.ok) throw new Error('Failed to fetch details');
       const data = await response.json();
       setDetails(data);

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import css from '../css/oob.module.css'; 
 import { FaHome } from 'react-icons/fa';
-
-const API_URL = 'http://localhost:5000/api/outofthebox';
+import { API_ENDPOINTS } from '../config/api';
 
 export default function Oob({ isDark }) {
   const [outOfTheBox, setOutOfTheBox] = useState([]);
@@ -15,7 +14,7 @@ export default function Oob({ isDark }) {
 
   const fetchOutOfTheBox = async () => {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(API_ENDPOINTS.OUT_OF_THE_BOX);
       if (!response.ok) throw new Error('Failed to fetch out of the box records');
       const data = await response.json();
       setOutOfTheBox(data);

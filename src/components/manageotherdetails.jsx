@@ -3,8 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import css from '../css/dashboard.module.css';
-
-const API_URL = 'http://localhost:5000/api/other-details';
+import { API_ENDPOINTS } from '../config/api';
 
 export default function ManageOtherDetails() {
   const [details, setDetails] = useState({
@@ -35,7 +34,7 @@ export default function ManageOtherDetails() {
 
   const fetchDetails = async () => {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(API_ENDPOINTS.OTHER_DETAILS);
       const data = await response.json();
       setDetails({
         name: data.name || '',
@@ -125,7 +124,7 @@ export default function ManageOtherDetails() {
     setSuccess('');
 
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch(API_ENDPOINTS.OTHER_DETAILS, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

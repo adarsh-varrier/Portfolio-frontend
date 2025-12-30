@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import css from '../css/manageCertificates.module.css';
+import { API_ENDPOINTS } from '../config/api';
 
 export default function ManageCertificates() {
   const [certificates, setCertificates] = useState([]);
@@ -29,7 +30,7 @@ export default function ManageCertificates() {
 
   const fetchCertificates = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/certificates');
+      const response = await fetch(API_ENDPOINTS.CERTIFICATES);
       const data = await response.json();
       setCertificates(data);
     } catch (error) {
@@ -66,8 +67,8 @@ export default function ManageCertificates() {
 
     try {
       const url = editingId 
-        ? `http://localhost:5000/api/certificates/${editingId}`
-        : 'http://localhost:5000/api/certificates';
+        ? `${API_ENDPOINTS.CERTIFICATES}/${editingId}`
+        : API_ENDPOINTS.CERTIFICATES;
       
       const method = editingId ? 'put' : 'post';
 
@@ -110,7 +111,7 @@ export default function ManageCertificates() {
     if (!window.confirm('Are you sure you want to delete this certificate?')) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/certificates/${id}`, {
+      await axios.delete(`${API_ENDPOINTS.CERTIFICATES}/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert('Certificate deleted!');

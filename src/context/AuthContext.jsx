@@ -1,5 +1,6 @@
 // frontend/src/context/AuthContext.jsx
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import { API_ENDPOINTS } from '../config/api';
 
 const AuthContext = createContext();
 
@@ -14,7 +15,7 @@ export const AuthProvider = ({ children }) => {
       
       if (storedToken) {
         try {
-          const response = await fetch('http://localhost:5000/api/auth/me', {
+          const response = await fetch(API_ENDPOINTS.AUTH.ME, {
             headers: {
               Authorization: `Bearer ${storedToken}`
             }

@@ -3,8 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import css from '../css/dashboard.module.css';
-
-const API_URL = 'http://localhost:5000/api/work-experience';
+import { API_ENDPOINTS } from '../config/api';
 
 export default function ManageWorkExp() {
   const [workExperiences, setWorkExperiences] = useState([]);
@@ -30,7 +29,7 @@ export default function ManageWorkExp() {
 
   const fetchWorkExperiences = async () => {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(API_ENDPOINTS.WORK_EXPERIENCE);
       const data = await response.json();
       if (data.success) {
         setWorkExperiences(data.data);
@@ -55,7 +54,7 @@ export default function ManageWorkExp() {
     setError('');
 
     try {
-      const url = editingId ? `${API_URL}/${editingId}` : API_URL;
+      const url = editingId ? `${API_ENDPOINTS.WORK_EXPERIENCE}/${editingId}` : API_ENDPOINTS.WORK_EXPERIENCE;
       const method = editingId ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
@@ -100,7 +99,7 @@ export default function ManageWorkExp() {
     }
 
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
+      const response = await fetch(`${API_ENDPOINTS.WORK_EXPERIENCE}/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

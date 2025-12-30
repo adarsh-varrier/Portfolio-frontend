@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { FaGithub, FaHome } from 'react-icons/fa'
-import css from '../css/project.module.css'; 
-
-const API_URL = 'http://localhost:5000/api/projects';
+import css from '../css/project.module.css';
+import { API_ENDPOINTS } from '../config/api';
 
 export default function Projects({ isDark }) {
   const [projects, setProjects] = useState([]);
@@ -15,7 +14,7 @@ export default function Projects({ isDark }) {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(API_ENDPOINTS.PROJECTS);
       if (!response.ok) throw new Error('Failed to fetch projects');
       const data = await response.json();
       setProjects(data);

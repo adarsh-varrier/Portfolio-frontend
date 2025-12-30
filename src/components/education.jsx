@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { FaGraduationCap, FaHome } from "react-icons/fa";
 import css from '../css/education.module.css';
-
-const API_URL = 'http://localhost:5000/api/education';
+import { API_ENDPOINTS } from '../config/api';
 
 export default function Education({ isDark }) {
   const [education, setEducation] = useState([]);
@@ -15,7 +14,7 @@ export default function Education({ isDark }) {
 
   const fetchEducation = async () => {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(API_ENDPOINTS.EDUCATION);
       if (!response.ok) throw new Error('Failed to fetch education');
       const data = await response.json();
       setEducation(data);

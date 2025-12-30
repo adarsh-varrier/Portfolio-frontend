@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import css from '../css/manageCertificates.module.css';
-
-const API_URL = 'http://localhost:5000/api/education';
+import { API_ENDPOINTS } from '../config/api';
 
 export default function ManageEducation() {
   const [education, setEducation] = useState([]);
@@ -30,7 +29,7 @@ export default function ManageEducation() {
 
   const fetchEducation = async () => {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(API_ENDPOINTS.EDUCATION);
       const data = await response.json();
       setEducation(data);
     } catch (error) {
@@ -66,8 +65,8 @@ export default function ManageEducation() {
 
     try {
       const url = editingId 
-        ? `${API_URL}/${editingId}`
-        : API_URL;
+        ? `${API_ENDPOINTS.EDUCATION}/${editingId}`
+        : API_ENDPOINTS.EDUCATION;
       
       const method = editingId ? 'put' : 'post';
 
@@ -109,7 +108,7 @@ export default function ManageEducation() {
     if (!window.confirm('Are you sure you want to delete this education record?')) return;
 
     try {
-      await axios.delete(`${API_URL}/${id}`, {
+      await axios.delete(`${API_ENDPOINTS.EDUCATION}/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert('Education record deleted!');
